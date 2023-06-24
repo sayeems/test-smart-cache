@@ -1,6 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { NextResponse } from "next/server";
+// import {
+//   setEdgeHeader,
+//   setSurrogateKeyHeader,
+// } from "@pantheon-systems/wordpress-kit";
 
 let httpResponse = NextResponse.next();
 
@@ -32,24 +36,54 @@ async function fetchData() {
       "Fastly-Debug": "1",
     },
   });
-  return {
-    data: await response.json(),
-    surrogateKey: response.headers.get("surrogate-key"),
-  };
+
+  // httpResponse.headers.set("sayeem", "hello");
+  // httpResponse.headers.append(
+  //   "surrogate-key",
+  //   response.headers.get("surrogate-key")
+  // );
+  // httpResponse.headers.append(
+  //   "cache-control",
+  //   "public, max-age=604800, must-revalidate"
+  // );
+  // httpResponse.headers.append("sayeem", "test");
+
+  // setEdgeHeader({ NextResponse });
+
+  // return {
+  //   data: await response.json(),
+  //   surrogateKey: response.headers.get("surrogate-key"),
+  // };
+
+  // setEdgeHeader(httpResponse);
+
+  return NextResponse.json(
+    {
+      data: await response.json(),
+      surrogateKey: response.headers.get("surrogate-key"),
+    },
+    {
+      status: 200,
+      headers: {
+        "x-presented-by": "sayeem",
+      },
+    }
+  );
 }
 
 export default async function Home() {
-  const { data, surrogateKey } = await fetchData();
+  let data = await fetchData();
+  data = await data.json();
   const {
     data: {
-      posts: { nodes },
+      data: {
+        posts: { nodes },
+      },
     },
   } = data;
-  httpResponse.headers.set("surrogate-key", surrogateKey);
-  httpResponse.headers.set(
-    "cache-control",
-    "public, max-age=604800, must-revalidate"
-  );
+
+  httpResponse.headers.set("x-mytest-h", "hello");
+
   return (
     <main className="grid grid-cols-3 gap-6 pb-20">
       {nodes.map((post) => {
