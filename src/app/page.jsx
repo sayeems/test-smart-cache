@@ -1,15 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { NextResponse } from "next/server";
-// import {
-//   setEdgeHeader,
-//   setSurrogateKeyHeader,
-// } from "@pantheon-systems/wordpress-kit";
 
-let httpResponse = NextResponse.next();
-
-export const dynamic = "force-dynamic";
-
+// GraphQL call with GET method
 async function fetchData() {
   const endpoint =
     "https://live-june-23-test-smart-cache.pantheonsite.io/graphql";
@@ -30,45 +23,36 @@ async function fetchData() {
     }
   }
 `;
-  let response = await fetch(`${endpoint}?query=${encodeURIComponent(query)}`, {
-    method: "GET",
-    headers: {
-      "Fastly-Debug": "1",
-    },
-  });
 
-  // httpResponse.headers.set("sayeem", "hello");
-  // httpResponse.headers.append(
-  //   "surrogate-key",
-  //   response.headers.get("surrogate-key")
-  // );
-  // httpResponse.headers.append(
-  //   "cache-control",
-  //   "public, max-age=604800, must-revalidate"
-  // );
-  // httpResponse.headers.append("sayeem", "test");
+  try {
+    let response = await fetch(
+      `${endpoint}?query=${encodeURIComponent(query)}`,
+      {
+        method: "GET",
+        headers: {
+          "Fastly-Debug": "1",
+        },
+        cache: "no-store", //SSR
+      }
+    );
 
-  // setEdgeHeader({ NextResponse });
-
-  // return {
-  //   data: await response.json(),
-  //   surrogateKey: response.headers.get("surrogate-key"),
-  // };
-
-  // setEdgeHeader(httpResponse);
-
-  return NextResponse.json(
-    {
-      data: await response.json(),
-      surrogateKey: response.headers.get("surrogate-key"),
-    },
-    {
-      status: 200,
-      headers: {
-        "x-presented-by": "sayeem",
+    // My attempt to set header using NextResponse
+    return NextResponse.json(
+      {
+        data: await response.json(),
+        surrogateKey: response.headers.get("surrogate-key"),
       },
-    }
-  );
+      {
+        status: 200,
+        headers: {
+          "x-test-header": "panth",
+        },
+      }
+    );
+  } catch (err) {
+    console.log("Error while fetching data for homepage:", err);
+    throw new Error("Something went wrong while fetching data fro this page.");
+  }
 }
 
 export default async function Home() {
@@ -81,8 +65,6 @@ export default async function Home() {
       },
     },
   } = data;
-
-  httpResponse.headers.set("x-mytest-h", "hello");
 
   return (
     <main className="grid grid-cols-3 gap-6 pb-20">

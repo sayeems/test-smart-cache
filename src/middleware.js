@@ -10,7 +10,7 @@ export async function middleware(request) {
   // headers.forEach((a) => {
   //   console.log(a);
   // });
-  response.headers.set("x-test-cache", "pantheon");
+  // response.headers.set("x-test-cache", "pantheon");
   return response;
 }
 
