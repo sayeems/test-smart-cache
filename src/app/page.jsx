@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { sampleData } from "@/sample";
 import { NextResponse } from "next/server";
 
 // GraphQL call with GET method
@@ -24,6 +25,7 @@ async function fetchData() {
   }
 `;
 
+  sampleData.sample = "fromPage";
   try {
     let response = await fetch(
       `${endpoint}?query=${encodeURIComponent(query)}`,
@@ -35,7 +37,6 @@ async function fetchData() {
         cache: "no-store", //SSR
       }
     );
-
     // My attempt to set header using NextResponse
     return NextResponse.json(
       {

@@ -1,16 +1,18 @@
 import { NextResponse } from "next/server";
+import { sampleData } from "./sample";
 
 export async function middleware(request) {
-  const response = NextResponse.next();
-  //   response.headers.set(
-  //     "cache-control",
-  //     "public,s-maxage=60470,must-revalidate"
-  //   );
-  // const headers = new Headers();
-  // headers.forEach((a) => {
-  //   console.log(a);
-  // });
-  // response.headers.set("x-test-cache", "pantheon");
+  let response = NextResponse.next();
+
+  // let head = process.env.skey;
+  const head = sampleData.sample;
+
+  response.headers.set("x-test-header", head);
+  response.headers.set(
+    "cache-control",
+    "public, max-age=604800, must-revalidate"
+  );
+
   return response;
 }
 
