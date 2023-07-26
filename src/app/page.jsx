@@ -34,7 +34,6 @@ async function fetchData() {
         headers: {
           "Fastly-Debug": "1",
         },
-        cache: "no-store", //SSR
       }
     );
     // My attempt to set header using NextResponse
