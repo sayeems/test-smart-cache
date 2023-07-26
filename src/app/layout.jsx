@@ -13,10 +13,14 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <header className="py-10 px-20 prose container mx-auto">
+        <header className="py-10 px-12 prose container mx-auto">
           <h1 className="text-center text-4xl">
             <Link href="/" className="text-teal-600 no-underline">
               Pantheon Smart Cache
+            </Link>
+            <span>/</span>
+            <Link href="/csr" className="text-red-600 no-underline">
+              CSR
             </Link>
           </h1>
         </header>
